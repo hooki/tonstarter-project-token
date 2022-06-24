@@ -71,8 +71,9 @@ task('check-powerton-hammer-dao').setAction(async () => {
   const wton = await ethers.getContractAt("IERC20", WTON);
   console.log(`PowerTON's WTON Balance ${await wton.balanceOf(powerTon.address) / 1e27}`);
 
+  console.log(`[BEFORE] powerTONProxy's WTON Balance ${await wton.balanceOf(powerTONProxy.address) / 1e27}`);
   console.log(`[BEFORE] sTOS holder's WTON Balance ${await wton.balanceOf(HOLDER) / 1e27}`);
-  await powerTONProxy.approveToDividendPool();
+  // await powerTONProxy.approveToDividendPool();
   await powerTONProxy.distribute();
 
   mining(0x100000);
@@ -80,5 +81,6 @@ task('check-powerton-hammer-dao').setAction(async () => {
   start_impersonate(HOLDER);
   const dividentPool = await ethers.getContractAt(ABI, DIVIDENTPOOL, await ethers.getSigner(HOLDER));
   await dividentPool.claim(WTON);
+  console.log(`[AFTER] powerTONProxy's WTON Balance ${await wton.balanceOf(powerTONProxy.address) / 1e27}`);
   console.log(`[AFTER] sTOS holder's WTON Balance ${await wton.balanceOf(HOLDER) / 1e27}`);
 });
