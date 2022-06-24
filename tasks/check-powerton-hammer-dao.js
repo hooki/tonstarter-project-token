@@ -1,5 +1,14 @@
 require('./utils.js').imports()
 
+ /* 
+  [ 스크립트 실행 결과 ]
+    $ npx hardhat check-powerton-hammer-dao
+    PowerTON : 0x51C65cd0Cdb1A8A8b79dfc2eE965B1bA0bb8fc89
+    PowerTON's WTON Balance 337302.7457927709
+    [BEFORE] sTOS holder's WTON Balance 0
+    [AFTER] sTOS holder's WTON Balance 5411.248094277198
+ */
+
 const latestTimestamp = async () => {
   const block = await ethers.provider.getBlock("latest");
   return block.timestamp;
@@ -18,8 +27,6 @@ task('check-powerton-hammer-dao').setAction(async () => {
   ]
 
   const WTON = "0xc4A11aaf6ea915Ed7Ac194161d2fC9384F15bff2";
-  const TOS = "0x409c4D8cd5d2924b9bc5509230d16a61289c8153";
-  const LAYER2REGISTRY = "0x0b3E174A2170083e770D5d4Cf56774D221b7063e";
   const SeigManagerOwner = "0x15280a52e79fd4ab35f4b9acbb376dcd72b44fd1";
   const SeigManagerAddress = "0x710936500aC59e8551331871Cbad3D33d5e0D909";
   const OPERATOR = "0x5d9a0646c46245a8a3b4775afb3c54d07bcb1764";
@@ -30,7 +37,7 @@ task('check-powerton-hammer-dao').setAction(async () => {
   const powerTon = await PowerTONContract.deploy();
   await powerTon.deployed();
 
-  await powerTon.setInfo(WTON, TOS, DIVIDENTPOOL, LAYER2REGISTRY, SeigManagerAddress);
+  await powerTon.setInfo(WTON, DIVIDENTPOOL);
 
   console.log(`PowerTON : ${powerTon.address}`);
 
