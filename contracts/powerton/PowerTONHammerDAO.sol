@@ -16,6 +16,8 @@ import "./PowerTONSwapperStorage.sol";
 import { PowerTONHammerDAOStorage } from "./PowerTONHammerDAOStorage.sol";
 import { ILockTOSDividend } from "../interfaces/ILockTOSDividend.sol";
 
+import "hardhat/console.sol";
+
 contract PowerTONHammerDAO is
     PowerTONSwapperStorage,
     AccessibleCommon,
@@ -64,16 +66,22 @@ contract PowerTONHammerDAO is
     }
     
     /// @notice PowerTON으로 쌓인 WTON 전체를 LockTOSDividendProxy 컨트랙트에 위임
-    function approveToDividendPool() external {
+    function approveToDividendPool() private {
         IERC20(wton).approve(
             address(dividiedPool),
             type(uint256).max
         );
     }
 
-    /// @notice LockTOSDividendProxy 컨트랙트를 사용해서 sTOS 홀더에게 에어드랍
+    /// @notice LockTOSDividendProxy 컨트랙트를 사용해서 WTON을 sTOS 홀더에게 에어드랍
     function distribute() external {
         uint256 wtonBalance = getWTONBalance();
+
+        // WTON 잔고보다 allowance가 낮으면 최대 값으로 위임 재설정
+        if (wtonBalance > IERC20(wton).allowance(address(this), address(dividiedPool))) {
+            approveToDividendPool();
+        }
+
         dividiedPool.distribute(wton, wtonBalance);
         emit Distributed(wton, wtonBalance);
     }
