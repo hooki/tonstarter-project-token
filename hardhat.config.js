@@ -10,13 +10,19 @@ require("./tasks/token-dividend-pool-deploy");
 require("./tasks/ton-stakers-info");
 require("./tasks/dao-agendas");
 require("./tasks/token-factory-deploy");
+require("./tasks/check-powerton-hammer-dao");
 
 
 module.exports = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
-      chainId: 31337
+      chainId: 31337,
+      forking:{
+        url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+        // blockNumber: 12997056,
+        blockNumber: 15014713
+      }
     },
     local: {
       chainId: 31337,
